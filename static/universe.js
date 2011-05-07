@@ -12,34 +12,13 @@ function Universe() {
 
 Universe.prototype.createRenderer = function() {
 
-  this.camera = new THREE.QuakeCamera({
-    activeLook: false,
-    fov: 50,
-    aspect: window.innerWidth / window.innerHeight,
-    near: 1,
-    far: 10000,
-    constrainVertical: true,
-    verticalMin: 1.1,
-    verticalMax: 2.2,
-    movementSpeed: 1000,
-    lookSpeed: 0.125,
-    noFly: true,
-    lookVertical: true,
-    autoForward: false
-  });
-  this.camera.position.y = 50;
-  this.camera.position.x = -500;
-  this.camera.position.z = 0;
-  this.camera.target.position.y = 100;
+  this.camera = new THREE.Camera(70, window.innerWidth / window.innerHeight, 1, 10000);
 
   this.scene = new THREE.Scene();
   this.scene.fog = new THREE.FogExp2(0x000000, 0.00015);
 
   var ambientLight = new THREE.AmbientLight(0xcccccc);
   this.scene.addLight(ambientLight);
-
-  //column = new Column({pieces:11, spacing: 30});
-  //column.init(this.scene);
 
   var directionalLight = new THREE.DirectionalLight( 0xffffff, 1.5 );
   directionalLight.position.x = 1;
@@ -48,15 +27,10 @@ Universe.prototype.createRenderer = function() {
   directionalLight.position.normalize();
   this.scene.addLight( directionalLight );
 
-  /*var geometry = new THREE.Plane(20000,20000);
-  this.plane = new THREE.Mesh(geometry, new THREE.MeshBasicMaterial({color:0x333333}));
-  this.plane.rotation.x = -90 * ( Math.PI / 180 );
-  this.scene.addObject(this.plane);*/
-
   this.renderer = new THREE.WebGLRenderer();
   this.renderer.setSize( window.innerWidth, window.innerHeight );
 
-  document.body.appendChild( this.renderer.domElement );
+  document.getElementById('holder').appendChild( this.renderer.domElement );
 
   this.update();
 };
@@ -77,6 +51,9 @@ Universe.prototype.addStar = function(obj) {
   this.stars.push(newStar);
 };
 
+var radius = 600;
+var theta = 0;
+
 Universe.prototype.update = function() {
   var self = this;
 
@@ -91,6 +68,11 @@ Universe.prototype.update = function() {
   $.each(this.stars, function(key, val) {
     this.update(time);
   });
+
+  theta += 0.2;
+  this.camera.position.x = radius * Math.sin(theta * Math.PI / 360);
+  this.camera.position.y = radius * Math.sin(theta * Math.PI / 360);
+  this.camera.position.z = radius * Math.cos(theta * Math.PI / 360);
 
   this.renderer.render(this.scene, this.camera);
 };

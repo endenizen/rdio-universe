@@ -11,33 +11,35 @@
   <link rel="stylesheet" href="cc.css" type="text/css">
 </head>
 <body>
-  <div id="dialog">
-    <label>Enter your Rdio Username <input id="username"><button id="go">Go</button></label>
-  </div>
-  
-  <div id="loading">
-    Loading...
-  </div>
-
-  <div id="player">
-    <img id="art">
-    <div id="controls">
-      <button id="prev">Previous</button>
-      <button id="play">Play</button>
-      <button id="pause">Pause</button>
-      <button id="next">Next</button>
-      <a class="listen" href="" target="_blank">Listen on Rdio</a>
+  <div id="holder">
+    <div id="dialog">
+      <label>Enter your Rdio Username <input id="username"><button id="go">Go</button></label>
     </div>
-    <div id="trackwrap">
-      <ol id="tracks">
-      </ol>
+    
+    <div id="loading">
+      Loading...
     </div>
+
+    <div id="player">
+      <img id="art">
+      <div id="controls">
+        <button id="prev">Previous</button>
+        <button id="play">Play</button>
+        <button id="pause">Pause</button>
+        <button id="next">Next</button>
+        <a class="listen" href="" target="_blank">Listen on Rdio</a>
+      </div>
+      <div id="trackwrap">
+        <ol id="tracks">
+        </ol>
+      </div>
+    </div>
+
+    <div id="poweredby"><a href="http://www.rdio.com/">Powered by Rdio</a></div>
+    
+    <div id="footer">© 2011 Rdio, Inc. You can build cool stuff too using the <a href="http://developer.rdio.com/">Rdio API</a>.</div>
+
   </div>
-
-  <div id="poweredby"><a href="http://www.rdio.com/">Powered by Rdio</a></div>
-  
-  <div id="footer">© 2011 Rdio, Inc. You can build cool stuff too using the <a href="http://developer.rdio.com/">Rdio API</a>.</div>
-
   <div id="api_swf"></div>
 </body>
 </html>
