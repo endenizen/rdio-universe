@@ -1,11 +1,25 @@
+var universe;
+
 // albums by year
-var years = {};
+//var years = {};
+
+function log() {
+  if(console && console.log) {
+    console.log.apply(console, arguments);
+  }
+}
 
 // add albums by year
 function addAlbums(data) {
   // process the data into years
   for (var i=0; i<data.length; i++) {
-    var album = data[i];
+    var artist = data[i];
+
+    if(!universe.hasStar(artist.artistKey)) {
+      universe.addStar(artist);
+    }
+
+    /*var album = data[i];
     var displayDate = album['displayDate'];
     if (displayDate) {
       var year = parseInt(displayDate.substr(displayDate.length-4));
@@ -14,13 +28,14 @@ function addAlbums(data) {
       } else {
         years[year] = [album];
       }
-    }
+    }*/
   }
 }
 
 
 // load data from the server.
 function load() {
+  universe = new Universe();
   var username = $('#username').val();
   $('#dialog').slideUp();
   $('#loading').slideDown();
@@ -54,10 +69,6 @@ function load() {
     loadNextAlbums(0);
   })
 }
-
-
-
-
 
 var rdio_cb = {};
 rdio_cb.ready = function() {
@@ -93,6 +104,7 @@ function play(key, art) {
 }
 
 function buildGraph() {
+  return;
   // calculate width & height
   var min = Infinity, max = 0, height = 0;
   for (var year in years) {
@@ -134,16 +146,18 @@ function buildGraph() {
 
 
 $(document).ready(function() {
+
   // when the user clicks "go", go.
   $('#go').click(function(){load()});
+
   // when the user presses enter, likewise
+
   $('#username').focus().keypress(function(e) {
     var c = e.which ? e.which : e.keyCode;
     if (c == 13) {
       load();
     }
-  })
-
+  });
 
   $.getJSON('/flashvars', function(flashvars) {
     // load the swf
@@ -155,7 +169,6 @@ $(document).ready(function() {
     var attributes = {};
     swfobject.embedSWF(swf, 'api_swf', 1, 1, '9.0.0', 'expressInstall.swf', flashvars, params, attributes);
   });
-
 
   // set up playback controls
   $('#prev').click(function() {
@@ -175,4 +188,35 @@ $(document).ready(function() {
     player().rdio_next();
   })
 
+  setTimeout(function() {
+    $('#username').val('garply');
+    $('#go').click();
+  }, 500);
+
 });
+
+
+
+/**
+ * Provides requestAnimationFrame in a cross browser way.
+ * http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+ */
+
+if ( !window.requestAnimationFrame ) {
+
+	window.requestAnimationFrame = ( function() {
+
+		return window.webkitRequestAnimationFrame ||
+		window.mozRequestAnimationFrame ||
+		window.oRequestAnimationFrame ||
+		window.msRequestAnimationFrame ||
+		function( /* function FrameRequestCallback */ callback, /* DOMElement Element */ element ) {
+
+			window.setTimeout( callback, 1000 / 60 );
+
+		};
+
+	} )();
+
+}
+
