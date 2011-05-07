@@ -1,7 +1,7 @@
 require 'sinatra'
 require 'rdio'
 
-rdio = Rdio.new "CONSUMER_KEY", "CONSUMER_SECRET"
+rdio = Rdio.new ENV['RDIO_API_KEY'], ENV['RDIO_API_SECRET']
 
 set :public, File.dirname(__FILE__) + '/static'
 
@@ -21,7 +21,7 @@ get '/albums/:user/:page' do |user, page|
   (rdio.getAlbumsInCollection :user=>user, :count => 20, :start => 20*page.to_i).to_json
 end
 
-DOMAIN = 'collection-chronology.heroku.com'
+DOMAIN = 'cold-dusk-191.heroku.com'
 
 get '/flashvars' do
   content_type 'application/json', :charset => 'utf-8' # it's json
