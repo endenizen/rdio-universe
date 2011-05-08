@@ -96,3 +96,7 @@ Planet.prototype.hide = function() {
 Planet.prototype.show = function() {
   this.scene.addObject(this.mesh);
 };
+
+Planet.prototype.handleClick = function() {
+  play(this.obj.key, this.obj.icon);
+};

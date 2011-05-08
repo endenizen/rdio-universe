@@ -37,7 +37,7 @@ Universe.prototype.createRenderer = function() {
 
   var self = this;
 
-  this.camera = new THREE.Camera(70, window.innerWidth / window.innerHeight, 1, 10000);
+  this.camera = new THREE.Camera(70, window.innerWidth / window.innerHeight, 1, 50000);
   this.camera.position.x = 0;
   this.camera.position.y = 0;
   this.camera.position.z = -5000;
@@ -117,7 +117,7 @@ Universe.prototype.handleMouseWheel = function(event) {
 
 Universe.prototype.zoom = function(delta) {
   this.distanceTarget -= delta;
-  this.distanceTarget = this.distanceTarget > 5000 ? 5000 : this.distanceTarget;
+  this.distanceTarget = this.distanceTarget > 10000 ? 10000 : this.distanceTarget;
   this.distanceTarget = this.distanceTarget < 250 ? 250 : this.distanceTarget;
 };
 
@@ -137,8 +137,12 @@ Universe.prototype.handleMouseUp = function(event) {
   if(distanceX < threshold || distanceY < threshold) {
     var clickedObject = this.getIntersectingObject(event);
     if(clickedObject) {
-      clickedObject.star.handleClick();
-      this.zoomToStar(clickedObject.star);
+      if(clickedObject.star) {
+        clickedObject.star.handleClick();
+        this.zoomToStar(clickedObject.star);
+      } else if(clickedObject.planet) {
+        clickedObject.planet.handleClick();
+      }
     }
   }
 

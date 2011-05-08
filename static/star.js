@@ -95,7 +95,6 @@ Star.prototype.getKey = function() {
 };
 
 Star.prototype.update = function(time) {
- // this.mesh.position.y = time / 1000000;
   var alpha = this.mesh.materials[0].uniforms.alpha.value;
   if (alpha < 1.0) { alpha += 0.01 }
   else             { alpha = 1.0 }
@@ -109,7 +108,7 @@ Star.prototype.update = function(time) {
 };
 
 Star.prototype.handleClick = function() {
-  play('r' + this.obj.artistKey, this.obj.icon);
+  //play(this.obj.key, this.obj.icon);
 };
 
 Star.prototype.addPlanet = function(planet) {
