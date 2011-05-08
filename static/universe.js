@@ -11,6 +11,10 @@ function Universe() {
   this.projector = null;
 
   this.createRenderer();
+
+  this.cameraPath = null;
+  this.cameraTargetPath = null;
+  this.cameraPathStartTime = null;
 }
 
 Universe.prototype.createRenderer = function() {
@@ -18,9 +22,23 @@ Universe.prototype.createRenderer = function() {
   var self = this;
 
   this.camera = new THREE.Camera(70, window.innerWidth / window.innerHeight, 1, 10000);
+  this.camera.position.x = 0;
+  this.camera.position.y = 0;
+  this.camera.position.z = -5000;
+
+  // dummy object for the camera to track
+  var geometry = new THREE.Cube(1, 1, 1);
+  var material = new THREE.MeshBasicMaterial({color:0xcc0000});
+  this.dummyTarget = new THREE.Mesh(geometry, material);
+  this.dummyTarget.position.x = 0;
+  this.dummyTarget.position.y = 0;
+  this.dummyTarget.position.z = 0;
 
   this.scene = new THREE.Scene();
   this.scene.fog = new THREE.FogExp2(0x000000, 0.00015);
+
+  this.scene.addObject(this.dummyTarget);
+  this.camera.target = this.dummyTarget;
 
   var ambientLight = new THREE.AmbientLight(0xcccccc);
   this.scene.addLight(ambientLight);
@@ -68,16 +86,22 @@ Universe.prototype.zoomToStar = function(star) {
   if(this.zoomedStar) {
     this.zoomedStar.hidePlanets();
   }
-  this.zoomedStar = star
-  //this.camera = new THREE.Camera(120, window.innerWidth / window.innerHeight, 1, 10000);
-  var params = {
-    fov: 70,
-    aspect: window.innerWidth / window.innerHeight,
-    near: 1,
-    far: 10000
-  };
-  //this.camera = new THREE.PathCamera(params);
-  this.camera.target = star.mesh;
+  this.zoomedStar = star;
+
+  log('moving to star at position ',star.mesh.position);
+
+  var waypoints = [[this.camera.position.x, this.camera.position.y, this.camera.position.z], [star.mesh.position.x, star.mesh.position.y + 100, star.mesh.position.z - 500]];
+  log('waypoints: ',waypoints);
+
+  var cameraSpline = new THREE.Spline();
+  cameraSpline.initFromArray(waypoints);
+  this.cameraPath = cameraSpline;
+
+  waypoints = [[this.dummyTarget.position.x, this.dummyTarget.position.y, this.dummyTarget.position.z], [star.mesh.position.x, star.mesh.position.y, star.mesh.position.z]];
+  var cameraTargetSpline = new THREE.Spline();
+  cameraTargetSpline.initFromArray(waypoints);
+  this.cameraTargetPath = cameraTargetSpline;
+
   star.showPlanets();
 };
 
@@ -114,10 +138,10 @@ Universe.prototype.addStar = function(obj) {
 
 var radius = 600;
 var theta = 0;
+var cameraMoveTime = 1000;
 
 Universe.prototype.update = function() {
   var self = this;
-
   requestAnimationFrame(function() {
     self.update();
   });
@@ -126,10 +150,33 @@ Universe.prototype.update = function() {
   this.tdiff = (time - this.lastUpdate) / 1000;
   this.lastUpdate = time;
 
-  theta += 0.2;
+  if(this.cameraPath) {
+    if(!this.cameraPathStart) {
+      this.cameraPathStart = time;
+    }
+    if(time - this.cameraPathStart > cameraMoveTime) {
+      // final step, move to end of spline and unset cameraPath
+      this.cameraPath = null;
+      this.cameraPathStart = null;
+    } else {
+
+      var moment = (time - this.cameraPathStart) / cameraMoveTime;
+      var point = this.cameraPath.getPoint(moment);
+      this.camera.position.x = point.x;
+      this.camera.position.y = point.y;
+      this.camera.position.z = point.z;
+
+      point = this.cameraTargetPath.getPoint(moment);
+      this.dummyTarget.position.x = point.x;
+      this.dummyTarget.position.y = point.y;
+      this.dummyTarget.position.z = point.z;
+    }
+  }
+
+  /*theta += 0.2;
   this.camera.position.x = radius * Math.sin(theta * Math.PI / 360);
   this.camera.position.y = radius * Math.sin(theta * Math.PI / 360);
-  this.camera.position.z = radius * Math.cos(theta * Math.PI / 360);
+  this.camera.position.z = radius * Math.cos(theta * Math.PI / 360);*/
 
   this.renderer.render(this.scene, this.camera);
 };

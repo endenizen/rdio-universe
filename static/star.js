@@ -66,9 +66,9 @@ Star.prototype.init = function() {
   });
 
   this.mesh = new THREE.Mesh(geometry, material);
-  this.mesh.position.y = Math.random() * 1000 - 500;
-  this.mesh.position.x = Math.random() * 1000 - 500;
-  this.mesh.position.z = Math.random() * 1000 - 500;
+  this.mesh.position.y = Math.random() * 2000 - 1000;
+  this.mesh.position.x = Math.random() * 2000 - 1000;
+  this.mesh.position.z = Math.random() * 2000 - 1000;
   //this.mesh.matrixAutoUpdate = false;
 
   this.scene.addObject(this.mesh);
