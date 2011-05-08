@@ -14,6 +14,7 @@ Star.prototype.init = function() {
     'earth' : {
       uniforms: {
         'texture': { type: 't', value: 0, texture: null },
+        'time': { type: 'f', value: 1.0 },
         'alpha': { type: 'f', value: 0 }
       },
       vertexShader: [
@@ -25,18 +26,7 @@ Star.prototype.init = function() {
           'vUv = uv;',
         '}'
       ].join('\n'),
-      fragmentShader: [
-        'uniform sampler2D texture;',
-        'uniform float alpha;',
-        'varying vec3 vNormal;',
-        'varying vec2 vUv;',
-        'void main() {',
-          'vec3 diffuse = texture2D( texture, vUv ).xyz;',
-          'float intensity = 1.05 - dot( vNormal, vec3( 0.0, 0.0, 1.0 ) );',
-          'vec3 atmosphere = vec3( 1.0, 1.0, 1.0 ) * pow( intensity, 3.0 );',
-          'gl_FragColor = vec4( diffuse + atmosphere, alpha );',
-        '}'
-      ].join('\n')
+      fragmentShader: null, // MOVED temporarily to #noise_shaders for ease of editing
     },
     'atmosphere' : {
       uniforms: { 'alpha': { type: 'f', value: 0 }
@@ -62,10 +52,11 @@ Star.prototype.init = function() {
   var shader = Shaders['earth'];
   var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
   uniforms['texture'].texture = THREE.ImageUtils.loadTexture(this.obj.icon);
+
   var material = new THREE.MeshShaderMaterial({
     uniforms: uniforms,
     vertexShader: shader.vertexShader,
-    fragmentShader: shader.fragmentShader
+    fragmentShader: document.getElementById("noise_shaders").textContent //shader.fragmentShader
   });
 
   this.mesh = new THREE.Mesh(geometry, material);
@@ -99,6 +90,7 @@ Star.prototype.update = function(time) {
   if (alpha < 1.0) { alpha += 0.01 }
   else             { alpha = 1.0 }
   this.mesh.materials[0].uniforms.alpha.value = alpha;
+  this.mesh.materials[0].uniforms.time.value += 0.05;
 
   $.each(this.planets, function(key, value) {
     value.update();

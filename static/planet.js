@@ -76,6 +76,7 @@ Planet.prototype.init = function() {
   this.mesh.position.y = this.star.mesh.position.y;
   this.mesh.position.z = zPos;
   this.distance = Math.random() * 100 + 150;
+  this.rotation_speed = Math.random() * 0.1 + 0.1;
 
   this.mesh.planet = this;
 };
@@ -85,6 +86,7 @@ var theta = 0;
 Planet.prototype.update = function() {
   theta += 0.00005;
   var curPos = theta + this.offset;
+  this.mesh.rotation.y -= this.rotation_speed
   this.mesh.position.x = this.star.mesh.position.x + this.distance * Math.cos(curPos);
   this.mesh.position.z = this.star.mesh.position.z + this.distance * Math.sin(curPos);
 };
