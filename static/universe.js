@@ -48,7 +48,7 @@ Universe.prototype.createRenderer = function() {
 
   // dummy object for the camera to track
   var geometry = new THREE.Cube(1, 1, 1);
-  var material = new THREE.MeshBasicMaterial({color:0xcc0000});
+  var material = new THREE.MeshBasicMaterial();
   this.dummyTarget = new THREE.Mesh(geometry, material);
   this.dummyTarget.position.x = 0;
   this.dummyTarget.position.y = 0;
@@ -211,7 +211,7 @@ Universe.prototype.zoomToStar = function(star) {
 
   log('moving to star at position ',star.mesh.position);
 
-  var waypoints = [[this.cameraBase.x, this.cameraBase.y, this.cameraBase.z], [star.mesh.position.x, star.mesh.position.y + 100, star.mesh.position.z - 500]];
+  var waypoints = [[this.cameraBase.x, this.cameraBase.y, this.cameraBase.z], [star.mesh.position.x, star.mesh.position.y, star.mesh.position.z]];
   log('waypoints: ',waypoints);
 
   var cameraSpline = new THREE.Spline();
