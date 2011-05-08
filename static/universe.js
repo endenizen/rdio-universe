@@ -219,6 +219,8 @@ Universe.prototype.zoomToStar = function(star) {
   cameraTargetSpline.initFromArray(waypoints);
   this.cameraTargetPath = cameraTargetSpline;
 
+  this.distanceTarget = 500;
+
   star.showPlanets();
 };
 
@@ -271,7 +273,7 @@ Universe.prototype.update = function() {
   
   this.rotation.x += (this.target.x - this.rotation.x) * 0.1;
   this.rotation.y += (this.target.y - this.rotation.y) * 0.1;
-  this.distance += (this.distanceTarget - this.distance) * 0.3;
+  this.distance += (this.distanceTarget - this.distance) * 0.03;
 
   var time = new Date().getTime();
   this.tdiff = (time - this.lastUpdate) / 1000;
