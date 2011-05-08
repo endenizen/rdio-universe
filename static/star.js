@@ -51,7 +51,7 @@ Star.prototype.init = function() {
   var geometry = new THREE.Sphere(100, 40, 30);
   var shader = Shaders['earth'];
   var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
-  uniforms['texture'].texture = THREE.ImageUtils.loadTexture(this.obj.icon);
+  uniforms['texture'].texture = THREE.ImageUtils.loadTexture(this.obj.icon.replace('200', '600'));
 
   var material = new THREE.MeshShaderMaterial({
     uniforms: uniforms,
