@@ -105,7 +105,7 @@ Star.prototype.update = function(time) {
     value.update();
   });
 
-  this.mesh.rotation.y += this.rotation_speed;
+  this.mesh.rotation.y -= this.rotation_speed;
 };
 
 Star.prototype.handleClick = function() {
