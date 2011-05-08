@@ -7,6 +7,8 @@ function Universe() {
 
   this.lastUpdate = new Date().getTime();
 
+  this.cameraBase = {x: 0, y: 0, z: 0};
+
   this.camera = null;
   this.renderer = null;
   this.projector = null;
@@ -14,10 +16,6 @@ function Universe() {
   this.cameraPath = null;
   this.cameraTargetPath = null;
   this.cameraPathStartTime = null;
-
-  // slowly move the camera to these positions
-  this.cameraTargetLocation = null;
-  this.cameraLocation = null;
 
   this.userInteracting = false;
 
@@ -46,8 +44,9 @@ Universe.prototype.createRenderer = function() {
 
   // dummy object for the camera to track
   var geometry = new THREE.Cube(1, 1, 1);
-  var material = new THREE.MeshBasicMaterial({color:0xcc0000});
+  var material = new THREE.MeshBasicMaterial();
   this.dummyTarget = new THREE.Mesh(geometry, material);
+  this.dummyTarget.materials[0].opacity = 0;
   this.dummyTarget.position.x = 0;
   this.dummyTarget.position.y = 0;
   this.dummyTarget.position.z = 0;
@@ -209,7 +208,7 @@ Universe.prototype.zoomToStar = function(star) {
 
   log('moving to star at position ',star.mesh.position);
 
-  var waypoints = [[this.camera.position.x, this.camera.position.y, this.camera.position.z], [star.mesh.position.x, star.mesh.position.y + 100, star.mesh.position.z - 500]];
+  var waypoints = [[this.cameraBase.x, this.cameraBase.y, this.cameraBase.z], [star.mesh.position.x, star.mesh.position.y, star.mesh.position.z]];
   log('waypoints: ',waypoints);
 
   var cameraSpline = new THREE.Spline();
@@ -221,17 +220,7 @@ Universe.prototype.zoomToStar = function(star) {
   cameraTargetSpline.initFromArray(waypoints);
   this.cameraTargetPath = cameraTargetSpline;
 
-
-  this.cameraFinalLocation = {
-    x: star.mesh.position.x,
-    y: star.mesh.position.y + 100,
-    z: star.mesh.position.z - 500
-  };
-  this.cameraTargetFinalLocation = {
-    x: star.mesh.position.x,
-    y: star.mesh.position.y,
-    z: star.mesh.position.z
-  };
+  this.distanceTarget = 500;
 
   star.showPlanets();
 };
@@ -285,23 +274,11 @@ Universe.prototype.update = function() {
   
   this.rotation.x += (this.target.x - this.rotation.x) * 0.1;
   this.rotation.y += (this.target.y - this.rotation.y) * 0.1;
-  this.distance += (this.distanceTarget - this.distance) * 0.3;
+  this.distance += (this.distanceTarget - this.distance) * 0.03;
 
   var time = new Date().getTime();
   this.tdiff = (time - this.lastUpdate) / 1000;
   this.lastUpdate = time;
-
-  if(this.cameraFinalLocation) {
-    this.camera.position.x += (this.cameraFinalLocation.x - this.camera.position.x) * 0.1;
-    this.camera.position.y += (this.cameraFinalLocation.y - this.camera.position.y) * 0.1;
-    this.camera.position.z += (this.cameraFinalLocation.z - this.camera.position.z) * 0.1;
-  }
-
-  if(this.cameraFinalTargetLocation) {
-    this.dummyTarget.position.x += (this.cameraTargetFinalLocation.x - this.dummyTarget.position.x) * 0.1;
-    this.dummyTarget.position.y += (this.cameraTargetFinalLocation.y - this.dummyTarget.position.y) * 0.1;
-    this.dummyTarget.position.z += (this.cameraTargetFinalLocation.z - this.dummyTarget.position.z) * 0.1;
-  }
 
   if(this.cameraPath) {
     if(!this.cameraPathStart) {
@@ -315,12 +292,10 @@ Universe.prototype.update = function() {
 
       var moment = (time - this.cameraPathStart) / cameraMoveTime;
       var point = this.cameraPath.getPoint(moment);
-      this.camera.position.x = point.x;
-      this.camera.position.y = point.y;
-      this.camera.position.z = point.z;
 
-      //this.target.x = point.x;
-      //this.target.y = point.y;
+      this.cameraBase.x = point.x;
+      this.cameraBase.y = point.y;
+      this.cameraBase.z = point.z;
 
       point = this.cameraTargetPath.getPoint(moment);
       this.dummyTarget.position.x = point.x;
@@ -329,10 +304,9 @@ Universe.prototype.update = function() {
     }
   }
 
-  //theta += 0.2;
-  this.camera.position.x = this.distance * Math.sin(this.rotation.x) * Math.cos(this.rotation.y);
-  this.camera.position.y = this.distance * Math.sin(this.rotation.y);
-  this.camera.position.z = this.distance * Math.cos(this.rotation.x) * Math.cos(this.rotation.y);
+  this.camera.position.x = this.cameraBase.x + this.distance * Math.sin(this.rotation.x) * Math.cos(this.rotation.y);
+  this.camera.position.y = this.cameraBase.y + this.distance * Math.sin(this.rotation.y);
+  this.camera.position.z = this.cameraBase.z + this.distance * Math.cos(this.rotation.x) * Math.cos(this.rotation.y);
 
   this.renderer.render(this.scene, this.camera);
 };
