@@ -74,6 +74,14 @@ Star.prototype.init = function() {
   this.mesh.position.z = Math.random() * 2000 - 1000;
   //this.mesh.matrixAutoUpdate = false;
 
+  this.rotation_speed = Math.random() * 0.002 + 0.002;
+  this.mesh.rotation.y += Math.random() * 180;
+  var scale = Math.random() * 0.9 + 0.6;
+  this.mesh.scale.x = scale;
+  this.mesh.scale.y = scale;
+  this.mesh.scale.z = scale;
+
+
   this.scene.addObject(this.mesh);
 
   this.mesh.star = this;
@@ -92,6 +100,7 @@ Star.prototype.update = function(time) {
   if (alpha < 1.0) { alpha += 0.01 }
   else             { alpha = 1.0 }
   this.mesh.materials[0].uniforms.alpha.value = alpha;
+  this.mesh.rotation.y += this.rotation_speed;
 };
 
 Star.prototype.handleClick = function() {
