@@ -13,22 +13,8 @@ function log() {
 function addAlbums(data) {
   // process the data into years
   for (var i=0; i<data.length; i++) {
-    var artist = data[i];
-
-    if(!universe.hasStar(artist.artistKey)) {
-      universe.addStar(artist);
-    }
-
-    /*var album = data[i];
-    var displayDate = album['displayDate'];
-    if (displayDate) {
-      var year = parseInt(displayDate.substr(displayDate.length-4));
-      if (years[year]) {
-        years[year].push(album);
-      } else {
-        years[year] = [album];
-      }
-    }*/
+    var album = data[i];
+    universe.addPlanet(album);
   }
 }
 
@@ -61,7 +47,6 @@ function load() {
           $('#title h1 .userinfo').show();
           $('#title h1 .userlink').text(username).attr('href', function(i, val) { return 'http://www.rdio.com/people/' + username });
           $('#title h1 .reset').click(function() { location.reload(); });
-          buildGraph();
         }
       })
     }

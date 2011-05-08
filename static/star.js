@@ -1,6 +1,7 @@
-function Star(scene, obj) {
-  this.planets = [];
+function Star(universe, scene, obj) {
+  this.planets = {};
 
+  this.universe = universe;
   this.scene = scene;
   this.obj = obj;
 
@@ -88,4 +89,20 @@ Star.prototype.update = function(time) {
 
 Star.prototype.handleClick = function() {
   play('r' + this.obj.artistKey, this.obj.icon);
+};
+
+Star.prototype.addPlanet = function(planet) {
+  this.planets[planet.obj.key] = planet;
+};
+
+Star.prototype.showPlanets = function() {
+  $.each(this.planets, function(key, value) {
+    value.show();
+  });
+};
+
+Star.prototype.hidePlanets = function() {
+  $.each(this.planets, function(key, value) {
+    value.hide();
+  });
 };

@@ -2,6 +2,7 @@ function Universe() {
   log('creating the universe');
 
   this.keyStarLookup = {};
+  this.keyPlanetLookup = {};
 
   this.lastUpdate = new Date().getTime();
 
@@ -59,7 +60,43 @@ Universe.prototype.handleClick = function(event) {
   if ( intersects.length > 0 ) {
     var clickedObject = intersects[0].object;
     clickedObject.star.handleClick();
+    this.zoomToStar(clickedObject.star);
   }
+};
+
+Universe.prototype.zoomToStar = function(star) {
+  if(this.zoomedStar) {
+    this.zoomedStar.hidePlanets();
+  }
+  this.zoomedStar = star
+  //this.camera = new THREE.Camera(120, window.innerWidth / window.innerHeight, 1, 10000);
+  var params = {
+    fov: 70,
+    aspect: window.innerWidth / window.innerHeight,
+    near: 1,
+    far: 10000
+  };
+  //this.camera = new THREE.PathCamera(params);
+  this.camera.target = star.mesh;
+  star.showPlanets();
+};
+
+Universe.prototype.hasPlanet = function(key) {
+  if(this.keyPlanetLookup[key]) {
+    return true;
+  }
+  return false;
+};
+
+Universe.prototype.addPlanet = function(obj) {
+  log('universe added planet ' + obj.key);
+  if(!this.hasStar(obj.artistKey)) {
+    this.addStar(obj);
+  }
+  var star = this.keyStarLookup[obj.artistKey];
+  var newPlanet = new Planet(star, obj);
+  star.addPlanet(newPlanet);
+  this.keyPlanetLookup[obj.key] = newPlanet;
 };
 
 Universe.prototype.hasStar = function(key) {
@@ -71,7 +108,7 @@ Universe.prototype.hasStar = function(key) {
 
 Universe.prototype.addStar = function(obj) {
   log('universe added star ' + obj.artistKey);
-  var newStar = new Star(this.scene, obj);
+  var newStar = new Star(this, this.scene, obj);
   this.keyStarLookup[obj.artistKey] = newStar;
 };
 
