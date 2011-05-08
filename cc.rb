@@ -21,7 +21,7 @@ get '/albums/:user/:page' do |user, page|
   (rdio.getAlbumsInCollection :user=>user, :count => 20, :start => 20*page.to_i).to_json
 end
 
-DOMAIN = 'cold-dusk-191.heroku.com'
+DOMAIN = 'rdio-universe.heroku.com'
 
 get '/flashvars' do
   content_type 'application/json', :charset => 'utf-8' # it's json

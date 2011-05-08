@@ -71,6 +71,8 @@ Star.prototype.init = function() {
   //this.mesh.matrixAutoUpdate = false;
 
   this.scene.addObject(this.mesh);
+
+  this.mesh.star = this;
 };
 
 Star.prototype.getKey = function() {
@@ -82,4 +84,8 @@ Star.prototype.getKey = function() {
 
 Star.prototype.update = function(time) {
   this.mesh.position.y = time / 1000000;
+};
+
+Star.prototype.handleClick = function() {
+  play('r' + this.obj.artistKey, this.obj.icon);
 };

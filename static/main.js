@@ -97,53 +97,13 @@ function player() {
 }
 
 function play(key, art) {
+  log('playing ' + key);
   player().rdio_play(key);
+  $('#player').show();
   $('#art').attr('src', art);
   $('#play').hide();
   $('#pause').show();
 }
-
-function buildGraph() {
-  return;
-  // calculate width & height
-  var min = Infinity, max = 0, height = 0;
-  for (var year in years) {
-    if (year < min) min = year;
-    if (year > max) max = year;
-    if (years[year].length > height) height = years[year].length;
-  }
-
-  // size up our space
-  $('#graph').css({'width': (max-min+1)*50, 'height': 'auto'});
-
-  // draw a graph
-  for (var year=min; year<=max; year++) {
-    var column = $('<div>').addClass('column');
-    column.append($('<div>').addClass('year').text(year));
-    if (years[year]) {
-      for (var i=0; i<years[year].length; i++) {
-        var album = years[year][i];
-        var art = $('<img>').addClass('album').attr('src', album['icon']);
-        art.attr('title', album['name'] + ' / ' + album['artist']);
-        art.attr('id', album['key']);
-        art.click(function() {
-          $('#player').show();
-          $('#instructions').hide();
-          play($(this).attr('id'), $(this).attr('src'));
-        })
-        column.append(art);
-      }
-      column.append($('<div>').addClass('count').text(years[year].length));
-    } else {
-      column.addClass('empty');
-      column.append($('<div>').addClass('count').text('0'));
-    }
-    column.appendTo($('#graph'));
-  }
-}
-
-
-
 
 $(document).ready(function() {
 
@@ -187,11 +147,6 @@ $(document).ready(function() {
   $('#next').click(function() {
     player().rdio_next();
   })
-
-  setTimeout(function() {
-    $('#username').val('garply');
-    $('#go').click();
-  }, 500);
 
 });
 
