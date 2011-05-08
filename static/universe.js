@@ -7,6 +7,8 @@ function Universe() {
 
   this.lastUpdate = new Date().getTime();
 
+  this.cameraBase = {x: 0, y: 0, z: 0};
+
   this.camera = null;
   this.renderer = null;
   this.projector = null;
@@ -209,7 +211,7 @@ Universe.prototype.zoomToStar = function(star) {
 
   log('moving to star at position ',star.mesh.position);
 
-  var waypoints = [[this.camera.position.x, this.camera.position.y, this.camera.position.z], [star.mesh.position.x, star.mesh.position.y + 100, star.mesh.position.z - 500]];
+  var waypoints = [[this.cameraBase.x, this.cameraBase.y, this.cameraBase.z], [star.mesh.position.x, star.mesh.position.y + 100, star.mesh.position.z - 500]];
   log('waypoints: ',waypoints);
 
   var cameraSpline = new THREE.Spline();
@@ -315,12 +317,10 @@ Universe.prototype.update = function() {
 
       var moment = (time - this.cameraPathStart) / cameraMoveTime;
       var point = this.cameraPath.getPoint(moment);
-      this.camera.position.x = point.x;
-      this.camera.position.y = point.y;
-      this.camera.position.z = point.z;
 
-      //this.target.x = point.x;
-      //this.target.y = point.y;
+      this.cameraBase.x = point.x;
+      this.cameraBase.y = point.y;
+      this.cameraBase.z = point.z;
 
       point = this.cameraTargetPath.getPoint(moment);
       this.dummyTarget.position.x = point.x;
@@ -329,10 +329,9 @@ Universe.prototype.update = function() {
     }
   }
 
-  //theta += 0.2;
-  this.camera.position.x = this.distance * Math.sin(this.rotation.x) * Math.cos(this.rotation.y);
-  this.camera.position.y = this.distance * Math.sin(this.rotation.y);
-  this.camera.position.z = this.distance * Math.cos(this.rotation.x) * Math.cos(this.rotation.y);
+  this.camera.position.x = this.cameraBase.x + this.distance * Math.sin(this.rotation.x) * Math.cos(this.rotation.y);
+  this.camera.position.y = this.cameraBase.y + this.distance * Math.sin(this.rotation.y);
+  this.camera.position.z = this.cameraBase.z + this.distance * Math.cos(this.rotation.x) * Math.cos(this.rotation.y);
 
   this.renderer.render(this.scene, this.camera);
 };
