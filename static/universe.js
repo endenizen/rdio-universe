@@ -1,6 +1,7 @@
 function Universe() {
   log('creating the universe');
 
+  this.stars = [];
   this.keyStarLookup = {};
   this.keyPlanetLookup = {};
 
@@ -133,6 +134,7 @@ Universe.prototype.hasStar = function(key) {
 Universe.prototype.addStar = function(obj) {
   log('universe added star ' + obj.artistKey);
   var newStar = new Star(this, this.scene, obj);
+  this.stars.push(newStar);
   this.keyStarLookup[obj.artistKey] = newStar;
 };
 
@@ -145,6 +147,11 @@ Universe.prototype.update = function() {
   requestAnimationFrame(function() {
     self.update();
   });
+
+  for (var i = 0; i < this.stars.length; i++) {
+    var star = this.stars[i];
+    star.update()
+  }
 
   var time = new Date().getTime();
   this.tdiff = (time - this.lastUpdate) / 1000;
