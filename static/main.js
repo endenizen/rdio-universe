@@ -12,6 +12,7 @@ function log() {
 // add albums by year
 function addAlbums(data) {
   // process the data into years
+  log('adding albums');
   for (var i=0; i<data.length; i++) {
     var album = data[i];
     universe.addPlanet(album);
@@ -31,6 +32,7 @@ function load() {
     var user = u['key'];
     var albumCount = 0;
     function loadNextAlbums(page) {
+      log('loading albums page: ' + page);
       $.getJSON('/albums/'+encodeURIComponent(user)+'/'+page, function(a) {
         if (a.length > 0) {
           // loaded some albums

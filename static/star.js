@@ -69,9 +69,9 @@ Star.prototype.init = function() {
   });
 
   this.mesh = new THREE.Mesh(geometry, material);
-  this.mesh.position.y = Math.random() * 2000 - 1000;
-  this.mesh.position.x = Math.random() * 2000 - 1000;
-  this.mesh.position.z = Math.random() * 2000 - 1000;
+  this.mesh.position.y = Math.random() * 5000 - 2500;
+  this.mesh.position.x = Math.random() * 5000 - 2500;
+  this.mesh.position.z = Math.random() * 5000 - 2500;
   //this.mesh.matrixAutoUpdate = false;
 
   this.scene.addObject(this.mesh);
@@ -92,6 +92,10 @@ Star.prototype.update = function(time) {
   if (alpha < 1.0) { alpha += 0.01 }
   else             { alpha = 1.0 }
   this.mesh.materials[0].uniforms.alpha.value = alpha;
+
+  $.each(this.planets, function(key, value) {
+    value.update();
+  });
 };
 
 Star.prototype.handleClick = function() {

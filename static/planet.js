@@ -3,6 +3,8 @@ function Planet(star, obj) {
   this.universe = star.universe;
   this.scene = star.scene;
   this.obj = obj;
+  this.distance = 300;
+  this.offset = Math.random() * 10;
 
   this.init();
 }
@@ -68,14 +70,23 @@ Planet.prototype.init = function() {
   });
 
   this.mesh = new THREE.Mesh(geometry, material);
-  this.mesh.position.y = this.star.mesh.position.y + 100;
-  this.mesh.position.z = this.star.mesh.position.z;
-  this.mesh.position.x = this.star.mesh.position.x;
-  //this.mesh.matrixAutoUpdate = false;
-
-  //this.scene.addObject(this.mesh);
+  var zPos = this.star.mesh.position.z + ((Math.random() - 0.5) * this.distance);
+  var xPos = this.star.mesh.position.x + ((Math.random() - 0.5) * this.distance);
+  this.mesh.position.x = xPos;
+  this.mesh.position.y = this.star.mesh.position.y;
+  this.mesh.position.z = zPos;
+  this.distance = Math.random() * 100 + 100;
 
   this.mesh.planet = this;
+};
+
+var theta = 0;
+
+Planet.prototype.update = function() {
+  theta += 0.001;
+  var curPos = theta + this.offset;
+  this.mesh.position.x = this.star.mesh.position.x + this.distance * Math.cos(curPos);
+  this.mesh.position.z = this.star.mesh.position.z + this.distance * Math.sin(curPos);
 };
 
 Planet.prototype.hide = function() {
