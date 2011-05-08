@@ -44,8 +44,9 @@ Universe.prototype.createRenderer = function() {
 
   // dummy object for the camera to track
   var geometry = new THREE.Cube(1, 1, 1);
-  var material = new THREE.MeshBasicMaterial({alpha:0});
+  var material = new THREE.MeshBasicMaterial();
   this.dummyTarget = new THREE.Mesh(geometry, material);
+  this.dummyTarget.materials[0].opacity = 0;
   this.dummyTarget.position.x = 0;
   this.dummyTarget.position.y = 0;
   this.dummyTarget.position.z = 0;
