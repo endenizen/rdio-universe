@@ -17,10 +17,6 @@ function Universe() {
   this.cameraTargetPath = null;
   this.cameraPathStartTime = null;
 
-  // slowly move the camera to these positions
-  this.cameraTargetLocation = null;
-  this.cameraLocation = null;
-
   this.userInteracting = false;
 
   this.handlers = handlers.apply(this);
@@ -48,7 +44,7 @@ Universe.prototype.createRenderer = function() {
 
   // dummy object for the camera to track
   var geometry = new THREE.Cube(1, 1, 1);
-  var material = new THREE.MeshBasicMaterial();
+  var material = new THREE.MeshBasicMaterial({alpha:0});
   this.dummyTarget = new THREE.Mesh(geometry, material);
   this.dummyTarget.position.x = 0;
   this.dummyTarget.position.y = 0;
@@ -223,18 +219,6 @@ Universe.prototype.zoomToStar = function(star) {
   cameraTargetSpline.initFromArray(waypoints);
   this.cameraTargetPath = cameraTargetSpline;
 
-
-  this.cameraFinalLocation = {
-    x: star.mesh.position.x,
-    y: star.mesh.position.y + 100,
-    z: star.mesh.position.z - 500
-  };
-  this.cameraTargetFinalLocation = {
-    x: star.mesh.position.x,
-    y: star.mesh.position.y,
-    z: star.mesh.position.z
-  };
-
   star.showPlanets();
 };
 
@@ -292,18 +276,6 @@ Universe.prototype.update = function() {
   var time = new Date().getTime();
   this.tdiff = (time - this.lastUpdate) / 1000;
   this.lastUpdate = time;
-
-  if(this.cameraFinalLocation) {
-    this.camera.position.x += (this.cameraFinalLocation.x - this.camera.position.x) * 0.1;
-    this.camera.position.y += (this.cameraFinalLocation.y - this.camera.position.y) * 0.1;
-    this.camera.position.z += (this.cameraFinalLocation.z - this.camera.position.z) * 0.1;
-  }
-
-  if(this.cameraFinalTargetLocation) {
-    this.dummyTarget.position.x += (this.cameraTargetFinalLocation.x - this.dummyTarget.position.x) * 0.1;
-    this.dummyTarget.position.y += (this.cameraTargetFinalLocation.y - this.dummyTarget.position.y) * 0.1;
-    this.dummyTarget.position.z += (this.cameraTargetFinalLocation.z - this.dummyTarget.position.z) * 0.1;
-  }
 
   if(this.cameraPath) {
     if(!this.cameraPathStart) {
