@@ -94,6 +94,12 @@ function play(key, art) {
 
 $(document).ready(function() {
 
+  if(!Detector.webgl) {
+    Detector.addGetWebGLMessage();
+    $('#dialog,#player,#footer,#poweredby').hide();
+    return;
+  }
+
   // when the user clicks "go", go.
   $('#go').click(function(){load()});
 
