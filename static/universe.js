@@ -205,6 +205,8 @@ Universe.prototype.handleMouseDown = function(event) {
 };
 
 Universe.prototype.zoomToStar = function(star) {
+  if (this.zoomedStar == star) return;
+
   if(this.zoomedStar) {
     this.zoomedStar.hidePlanets();
   }
