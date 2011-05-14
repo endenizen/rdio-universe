@@ -1,5 +1,5 @@
 require 'sinatra'
-require 'rdio'
+require './rdio'
 
 rdio = Rdio.new ENV['RDIO_API_KEY'], ENV['RDIO_API_SECRET']
 DOMAIN = ENV["DOMAIN"]
