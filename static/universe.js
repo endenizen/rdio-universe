@@ -226,7 +226,7 @@ Universe.prototype.zoomToStar = function(star) {
   cameraTargetSpline.initFromArray(waypoints);
   this.cameraTargetPath = cameraTargetSpline;
 
-  this.distanceTarget = 500;
+  this.distanceTarget = 300;
 
   star.showPlanets();
 };
