@@ -1,8 +1,5 @@
 var universe;
 
-// albums by year
-//var years = {};
-
 function log() {
   if(console && console.log) {
     console.log.apply(console, arguments);
