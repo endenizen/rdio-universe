@@ -16,6 +16,22 @@ get '/user/:vanityName' do |vanityName|
   (rdio.findUser :vanityName => vanityName).to_json
 end
 
+get '/artists/:user/:page' do |user, page|
+  content_type 'application/json', :charset => 'utf-8'
+  cache_control :public, :max_age => 60*60
+  (rdio.getArtistsInCollection :user=>user, :count=>100, :start=>100*page.to_i).to_json
+end
+
+get '/albums_for_artist/:artist' do |artistkey|
+  content_type 'application/json', :charset => 'utf-8'
+  cache_control :private
+  if artistkey =~ /rl([^\|]+)\|(.*)$/
+    artist = "r" + $1
+    user = "s" + $2
+    (rdio.getAlbumsForArtistInCollection :user=>user, :artist=>artist).to_json
+  end
+end
+
 get '/albums/:user/:page' do |user, page|
   content_type 'application/json', :charset => 'utf-8' # it's json
   cache_control :public, :max_age => 60*60 # cache it for an hour

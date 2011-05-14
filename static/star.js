@@ -106,7 +106,7 @@ Star.prototype.init = function() {
   var geometry = new THREE.Sphere(100, 40, 30);
   var shader = Shaders['earth'];
   var uniforms = THREE.UniformsUtils.clone(shader.uniforms);
-  uniforms['texture'].texture = THREE.ImageUtils.loadTexture(this.obj.icon.replace('200', '600'));
+  uniforms['texture'].texture = THREE.ImageUtils.loadTexture(this.obj.icon);
 
   var material = new THREE.MeshShaderMaterial({
     uniforms: uniforms,
@@ -151,6 +151,10 @@ Star.prototype.update = function(time) {
     value.update();
   });
 
+  if(this.universe.visData && this.universe.visData.star) {
+    this.mesh.scale.y += (this.universe.visData.star - this.mesh.scale.y) * .05;
+  }
+
   this.mesh.rotation.y -= this.rotation_speed;
 };
 
@@ -163,9 +167,22 @@ Star.prototype.addPlanet = function(planet) {
 };
 
 Star.prototype.showPlanets = function() {
-  $.each(this.planets, function(key, value) {
-    value.show();
-  });
+  if(this.loadedPlanets) {
+    $.each(this.planets, function(key, value) {
+      value.show();
+    });
+  } else {
+    var self = this;
+    $.getJSON('/albums_for_artist/' + this.obj.key, function(a) {
+      log('asked for albums for artist ' + self.obj.key + ' got ',a);
+      self.loadedPlanets = true;
+      $.each(a, function() {
+        self.addPlanet(new Planet(self, this));
+      });
+      // now we have planets, show them again...
+      self.showPlanets();
+    });
+  }
 };
 
 Star.prototype.hidePlanets = function() {

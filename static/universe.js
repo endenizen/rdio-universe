@@ -72,7 +72,7 @@ Universe.prototype.createRenderer = function() {
   this.renderer = new THREE.WebGLRenderer({clearAlpha: 1});
   this.renderer.setSize( window.innerWidth, window.innerHeight );
 
-  document.getElementById('holder').appendChild( this.renderer.domElement );
+  document.getElementById('scene').appendChild( this.renderer.domElement );
 
   this.update();
 
