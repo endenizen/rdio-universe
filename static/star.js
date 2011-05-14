@@ -111,7 +111,7 @@ Star.prototype.init = function() {
   var material = new THREE.MeshShaderMaterial({
     uniforms: uniforms,
     vertexShader: shader.vertexShader,
-    fragmentShader: shader.fragmentShader
+    fragmentShader: document.getElementById("noise_shaders").textContent //shader.fragmentShader
   });
 
   this.mesh = new THREE.Mesh(geometry, material);
