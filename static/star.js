@@ -40,6 +40,9 @@ Star.prototype.Shaders = {
 };
 
 Star.prototype.init = function() {
+  var seed = this.obj.key;
+  Math.seedrandom(seed);
+
   var geometry = new THREE.Sphere(100, 40, 30);
 
   var shader = this.Shaders['earth'];

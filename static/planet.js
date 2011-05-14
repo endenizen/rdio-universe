@@ -4,6 +4,10 @@ function Planet(star, obj) {
   this.scene = star.scene;
   this.obj = obj;
   this.distance = 300;
+
+  var seed = this.obj.key;
+  Math.seedrandom(seed);
+
   this.offset = Math.random() * 10;
 
   this.init();
