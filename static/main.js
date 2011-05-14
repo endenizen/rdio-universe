@@ -19,42 +19,58 @@ function addAlbums(data) {
   }
 }
 
+function addArtists(data) {
+  $.each(data, function() {
+    var artist = this;
+    universe.addStar(artist);
+  });
+}
+
+function loadArtists(user) {
+  var artistCount = 0;
+  var artists = [];
+
+  function loadNextArtists(page) {
+    log('loading artists page ' + page);
+    $.getJSON('/artists/' + encodeURIComponent(user['key']) + '/' + page, function(a) {
+      if(a.length > 0) {
+        artists = artists.concat(a);
+        loadNextArtists(page + 1);
+      } else {
+        // done
+        var titleH = $('#title h1');
+        titleH.find('.userinfo').show();
+        var userlink = titleH.find('.userlink');
+        userlink.text(user['username']);
+        userlink.attr('href', 'http://www.rdio.com' + user['url']);
+
+        titleH.find('.reset').click(function() { location.reload(); });
+        $('#loading').slideUp(function() {
+          artistCount = artists.length;
+          addArtists(artists);
+        });
+      }
+    });
+  }
+
+  loadNextArtists(0);
+  return;
+}
+
+function loadUser(username) {
+  // find the user
+  $.getJSON('/user/'+encodeURIComponent(username), function(u) {
+    loadArtists(u);
+  });
+}
 
 // load data from the server.
 function load() {
-  universe = new Universe();
   var username = $('#username').val();
   $('#dialog').slideUp();
-  $('#loading').slideDown();
-
-  // find the user
-  $.getJSON('/user/'+encodeURIComponent(username), function(u) {
-    var user = u['key'];
-    var albumCount = 0;
-    function loadNextAlbums(page) {
-      log('loading albums page: ' + page);
-      $.getJSON('/albums/'+encodeURIComponent(user)+'/'+page, function(a) {
-        if (a.length > 0) {
-          // loaded some albums
-          addAlbums(a);
-          // update the ui
-          albumCount += a.length
-          $('#loading').text('Loaded '+albumCount+' albums...');
-          // go look for some more
-          loadNextAlbums(page+1);
-        } else {
-          // looks like there's nothing left to load
-          $('#loading').slideUp();
-          $('#instructions').show();
-          $('#title h1 .userinfo').show();
-          $('#title h1 .userlink').text(username).attr('href', function(i, val) { return 'http://www.rdio.com/people/' + username });
-          $('#title h1 .reset').click(function() { location.reload(); });
-        }
-      })
-    }
-
-    loadNextAlbums(0);
-  })
+  $('#loading').slideDown(function() {
+    loadUser(username);
+  });
 }
 
 var rdio_cb = {};
@@ -99,6 +115,8 @@ $(document).ready(function() {
     $('#dialog,#player,#footer,#poweredby').hide();
     return;
   }
+
+  universe = new Universe();
 
   // when the user clicks "go", go.
   $('#go').click(function(){load()});

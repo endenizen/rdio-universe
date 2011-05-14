@@ -7,6 +7,11 @@ body {
   overflow: hidden;
 }
 
+#apiswf {
+  width: 50px;
+  height: 50px;
+}
+
 #title {
   position: fixed;
   top: 30px;
@@ -60,6 +65,7 @@ body {
 #title .logo {
   overflow: hidden;
   float: left;
+  text-indent: -9999px;
   width: 100px;
   height: 42px;
   margin-right: 12px;
@@ -134,11 +140,10 @@ body {
   margin-top: -75px;
 }
 
-#dialog, 
-#loading {
+#dialog, #loading {
   font-size: 24px;
   font-weight: regular;
-  color: #333;
+  color: #fff;
   text-shadow: 0 1px 0 rgba(255,255,255,0.35);
   line-height: 36px;
 }
@@ -188,6 +193,7 @@ body {
   margin-top: -30px;
   text-align: center;
   display: none;
+  color: #fff;
 }
 #player {
   display: none;
