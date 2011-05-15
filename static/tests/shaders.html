@@ -1,0 +1,40 @@
+<html>
+<head>
+  <meta http-equiv="content-type" content="text/html; charset=utf-8">
+
+  <title>Shaders</title>
+  <script src="../Three.js"></script>
+  <script src="../RequestAnimationFrame.js"></script>
+  
+</head>
+<body>
+  <div id="scene"></div>
+  <script>
+    var scene = new THREE.Scene();
+
+    var camera = new THREE.Camera(70, window.innerWidth / window.innerHeight, 1, 50000);
+    camera.position.z = -500;
+
+    var geometry = new THREE.Cube(200, 200, 200);
+    var material = new THREE.MeshBasicMaterial({color:0xcc0000});
+
+    var cube = new THREE.Mesh(geometry, material);
+
+    scene.addObject(cube);
+
+    var renderer = new THREE.WebGLRenderer();
+    renderer.setSize(window.innerWidth, window.innerHeight);
+
+    document.getElementById('scene').appendChild(renderer.domElement);
+
+    function update() {
+      requestAnimationFrame(function() {
+        update();
+      });
+      renderer.render(scene, camera);
+    }
+
+    update();
+  </script>
+</body>
+</html>
