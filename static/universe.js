@@ -257,7 +257,7 @@ Universe.prototype.hasStar = function(key) {
 };
 
 Universe.prototype.addStar = function(obj) {
-  log('universe added star ' + obj.artistKey);
+  log('universe added star ' + obj.key);
   var newStar = new Star(this, this.scene, obj);
   this.stars.push(newStar);
   this.keyStarLookup[obj.artistKey] = newStar;
