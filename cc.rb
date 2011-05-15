@@ -7,7 +7,7 @@ DOMAIN = ENV["DOMAIN"]
 set :public, File.dirname(__FILE__) + '/static'
 
 get '/' do
-  redirect '/main.html'
+    File.read('static/index.html')
 end
 
 get '/user/:vanityName' do |vanityName|
