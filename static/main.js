@@ -23,7 +23,7 @@ function addArtists(data) {
   });
 }
 
-function loadArtists(user) {
+function loadArtistsForUser(user) {
   var artistCount = 0;
   var artists = [];
 
@@ -35,13 +35,6 @@ function loadArtists(user) {
         loadNextArtists(page + 1);
       } else {
         // done
-        var titleH = $('#title h1');
-        titleH.find('.userinfo').show();
-        var userlink = titleH.find('.userlink');
-        userlink.text(user['username']);
-        userlink.attr('href', 'http://www.rdio.com' + user['url']);
-
-        titleH.find('.reset').click(function() { location.reload(); });
         $('#loading').slideUp(function() {
           artistCount = artists.length;
           addArtists(artists);
@@ -56,8 +49,15 @@ function loadArtists(user) {
 
 function loadUser(username) {
   // find the user
-  $.getJSON('/user/'+encodeURIComponent(username), function(u) {
-    loadArtists(u);
+  $.getJSON('/user/'+encodeURIComponent(username), function(user) {
+    var titleH = $('#title h1');
+    titleH.find('.userinfo').show();
+    var userlink = titleH.find('.userlink');
+    userlink.text(username);
+    userlink.attr('href', 'http://www.rdio.com' + user['url']);
+
+    titleH.find('.reset').click(function() { location.reload(); });
+    loadArtistsForUser(user);
   });
 }
 
